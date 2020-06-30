@@ -10,7 +10,6 @@
 #include <cstdio>
 
 namespace svl{
-//    std::vector<int> abc;
   template <typename T , typename allocator = std::allocator<T>>
   class vector{
   public:

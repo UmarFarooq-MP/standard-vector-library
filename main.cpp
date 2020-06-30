@@ -1,5 +1,11 @@
 #include <iostream>
-using namespace std;
+#include <memory>
+
+#include "vector.h"
+//#include <vector>
+
 int main (){
-	cout << "Hello World \n";
+    svl::vector<int> myvec(10);
+
+//    std::vector<int> ssl;
 }

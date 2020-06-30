@@ -6,7 +6,6 @@
 #define VECTOR_VECTOR_H
 
 #include <memory>
-//#include <vector>
 #include <cstdio>
 
 namespace svl{

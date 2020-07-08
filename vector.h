@@ -9,7 +9,7 @@
 #include <iostream>
 
 /** just to keep consistency of data type **/
-typedef unsigned int size_u;
+typedef unsigned long size_u;
 namespace svl {
     template<typename T>
     class vector {
@@ -40,10 +40,12 @@ namespace svl {
             }
         }
 
-        vector(const size_u &&size) noexcept {
-            m_capacity = m_size = size;
-            m_data = new T[m_size + 1];
-            m_rear = m_data + m_size;
+        vector(vector &&other) noexcept {
+            std::cout << "move constructor \n";
+            this->m_data = std::move(other.m_data);
+            this->m_size = std::move(other.size());
+            this->m_capacity = std::move(other.capacity());
+            ~other();
         }
 
         vector(const std::initializer_list<T> &args) {
@@ -89,6 +91,9 @@ namespace svl {
             delete[] m_data;
         }
 
+        void insert(T value){
+
+        }
         void assign(const size_u count, const T value) {
 
             if (count < 0)

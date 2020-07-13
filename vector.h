@@ -7,6 +7,7 @@
 
 #include <initializer_list>
 #include <iostream>
+#include <array>
 
 /** just to keep consistency of data type **/
 typedef unsigned long size_u;
@@ -91,9 +92,10 @@ namespace svl {
             delete[] m_data;
         }
 
-        void insert(T value){
+        void insert(T value) {
 
         }
+
         void assign(const size_u count, const T value) {
 
             if (count < 0)
@@ -140,6 +142,11 @@ namespace svl {
             }
             m_data[m_size] = value;
             ++m_size;
+        }
+
+        template<typename ... Args>
+        void emplace_back(Args... args) {
+            (push_back(args),...);
         }
 
         void display() {

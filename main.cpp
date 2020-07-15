@@ -1,12 +1,20 @@
 
-#include <iostream>
 #include "vector.h"
 
-#include <vector>
+int main() {
 
-int main () {
-    unsigned int x = 10;
-    svl::vector<int> test(x);
-    test.display();
-    svl::vector<int>test1(std::move(test));
+    svl::vector<int> test(10);
+    std::cout << test.size() <<"  " << test.capacity()<<std::endl;
+
+    test.push_back(1);
+    test.push_back(1);
+    test.push_back(1);
+    test.push_back(1);
+    test.push_back(1);
+
+    std::cout << test.size() <<"  " << test.capacity()<<std::endl;
+
+
+    std::cout << test.end() << "\n";
+    std::cout << test.rbegin() << "\n";
 }

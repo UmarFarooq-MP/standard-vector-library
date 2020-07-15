@@ -18,21 +18,16 @@ namespace svl {
         size_u m_size;
         size_u m_capacity;
         T *m_data;
-        T *m_rear; //end
 
     public:
         explicit vector(size_u size = 0) : m_size(size), m_capacity(size) {
             m_data = new T[size + 1];
-            m_rear = m_data + 1;
         }
 
-        vector(const vector &obj) {
+        vector(const vector &obj) : m_size(obj.m_size), m_capacity(obj.capacity()) {
             std::cout << "Copy Constructor" << std::endl;
-            m_data = new T[m_capacity + 1];
-            m_rear = m_data + obj.m_size;
-
+            m_data = new T[m_capacity];
             std::cout << "m_data =" << m_data << std::endl;
-            std::cout << "m_rear =" << m_rear << std::endl;
             m_size = obj.m_size;
             m_capacity = obj.m_capacity;
 
@@ -42,21 +37,23 @@ namespace svl {
         }
 
         vector(vector &&other) noexcept {
+
             std::cout << "move constructor \n";
-            this->m_data = std::move(other.m_data);
-            this->m_size = std::move(other.size());
-            this->m_capacity = std::move(other.capacity());
-            ~other();
+            this->m_data = other.m_data;
+            this->m_size = other.size();
+            this->m_capacity = other.capacity();
+
+            other.m_data = nullptr;
+            other.m_size = 0;
+            other.m_capacity = 0;
         }
 
         vector(const std::initializer_list<T> &args) {
             m_capacity = m_size = static_cast<T>(args.size());
-            m_data = new T[m_size + 1];
-            m_rear = m_data + m_size;
+            m_data = new T[m_size];
             int count{0};
             for (const auto &itr : args) {
-                m_data[count] = itr;
-                ++count;
+                m_data[count++] = itr;
             }
         }
 
@@ -73,9 +70,8 @@ namespace svl {
                 delete[] m_data;
             }
             std::cout << "assignment operator \n";
-            m_data = new T[obj.m_capacity + 1];
+            m_data = new T[obj.m_capacity];
             m_capacity = obj.m_capacity;
-            m_rear = m_data + m_capacity;
             for (size_u i{0}; i < m_size; ++i) {
                 m_data[i] = obj.m_data[i];
             }
@@ -105,7 +101,6 @@ namespace svl {
                 m_size = m_capacity = count;
                 delete[] m_data;
                 m_data = new T[count + 1];
-                m_rear = m_data + count;
             }
             for (size_u i{0}; i < count; ++i) {
                 m_data[i] = value;
@@ -114,13 +109,13 @@ namespace svl {
 
         void pop_back() {
             m_size--;
-            m_rear = m_rear - 1;
         }
 
-        T *at(const T index) {
-            if (index > 0 && index < m_size - 1)
-                return m_data + index;
-            throw std::out_of_range("index out of rang");
+        T &at(const T index) {
+            if (index < 0 || index >= m_size) {
+                throw std::out_of_range("out of index");
+            }
+            return m_data[index];
         }
 
 
@@ -146,7 +141,7 @@ namespace svl {
 
         template<typename ... Args>
         void emplace_back(Args... args) {
-            (push_back(args),...);
+            push_back(std::forward<T>(args)...);
         }
 
         void display() {
@@ -160,7 +155,6 @@ namespace svl {
             delete[] m_data;
             m_size = 0;
             m_capacity = 0;
-            m_rear = nullptr;
         }
 
         T *begin() const {
@@ -168,7 +162,7 @@ namespace svl {
         }
 
         T *end() const {
-            return m_rear;
+            return m_data+m_size;
         }
 
         T *rbegin() const {
@@ -183,17 +177,18 @@ namespace svl {
         void reAllocate() {
             if (m_size == 0) {
                 m_capacity = 1;
+                T *temp  = new (std::nothrow) T[m_capacity];
+                return;
             } else {
                 m_capacity = m_size * 2;
             }
-            T *temp = new T[m_capacity + 1];
+            T *temp  = new (std::nothrow) T[m_capacity];
             if (!temp) {
-                throw std::runtime_error("memory allocation error");
+                throw std::runtime_error("Bad Allocation");
             }
             std::copy(m_data, m_data + m_size, temp);
             delete[] m_data;
             m_data = temp;
-            m_rear = m_data + (m_capacity);
         }
     };
 }

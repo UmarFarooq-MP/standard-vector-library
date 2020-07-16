@@ -8,6 +8,7 @@
 #include <initializer_list>
 #include <iostream>
 #include <array>
+#include <climits>
 
 /** just to keep consistency of data type **/
 typedef unsigned long size_u;
@@ -20,16 +21,27 @@ namespace svl {
         T *m_data;
 
     public:
-        explicit vector(size_u size = 0) : m_size(size), m_capacity(size) {
-            m_data = new T[size + 1];
+        explicit vector(size_u size = 0) : m_capacity(size) {
+            if (size < 0 || size > INT_MAX)
+                throw std::out_of_range("Invalid Number For Allocation");
+            m_data = new (std::nothrow) T[size];
+            if (m_data)
+                throw std::bad_alloc();
         }
 
+        vector(T *start,T *end) {
+            if (start == end){
+                throw std::runtime_error("Fuck You bitches equal");
+            } else if (start > end){
+                throw std::runtime_error("Fuck You bitches");
+            }
+            m_capacity = m_size = (int)(end - start);
+            m_data = new T [m_size];
+            std::copy(start,end,m_data);
+        }
         vector(const vector &obj) : m_size(obj.m_size), m_capacity(obj.capacity()) {
             std::cout << "Copy Constructor" << std::endl;
             m_data = new T[m_capacity];
-            std::cout << "m_data =" << m_data << std::endl;
-            m_size = obj.m_size;
-            m_capacity = obj.m_capacity;
 
             for (size_u i{0}; i < m_size; ++i) {
                 m_data[i] = obj.m_data[i];

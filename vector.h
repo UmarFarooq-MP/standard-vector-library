@@ -185,7 +185,11 @@ namespace svl {
             return m_data;
         }
 
+
     private:
+
+        void allocate(){}
+
         void reAllocate() {
             if (m_size == 0) {
                 m_capacity = 1;

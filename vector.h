@@ -135,6 +135,17 @@ namespace svl {
             return m_data[m_size - 1];
         }
 
+        T front() const {
+            return m_data[0];
+        }
+
+        T* data() const {
+            if (m_data == nullptr){
+                return nullptr;
+            }
+            return m_data;
+        }
+
         size_u capacity() const {
             return m_capacity;
         }
@@ -143,7 +154,11 @@ namespace svl {
             return m_size;
         }
 
-        void push_back(const T value) {
+        size_u max_size() const {
+            return std::distance(begin(), end());
+        }
+
+        void push_back(T&& value) {
             if (m_size == m_capacity) {
                 reAllocate();
             }
@@ -183,6 +198,21 @@ namespace svl {
 
         T *rend() const {
             return m_data;
+        }
+
+        bool empty() const {
+            return begin() == end();
+        }
+
+        void reserve( size_u new_cap ){
+            if (new_cap > max_size()){
+                throw std::length_error("Max size length has exceeded");
+            }
+            if (new_cap > capacity()){
+                m_capacity = m_size = (int)(new_cap - begin());
+                m_data = new T [m_size];
+                std::copy(begin(),new_cap,m_data);
+            }
         }
 
 

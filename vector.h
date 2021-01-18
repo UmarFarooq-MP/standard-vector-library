@@ -103,9 +103,17 @@ namespace svl {
             delete[] m_data;
         }
 
-        void insert(T value) {
-
-        }
+        /**TO-BE Done**/
+        /*void insert(T *pos, const T& value) {
+            m_size += 1;
+            if (m_size == m_capacity){
+                reAllocate();
+            }
+            for (int i = *pos; i < m_size; i++){
+                m_data[i + 1] = m_data[i];
+            }
+            m_data[*pos - 1] = value;
+        }*/
 
         void assign(const size_u count, const T value) {
 
@@ -215,6 +223,12 @@ namespace svl {
                 m_capacity = (int) (new_cap);
                 m_data = new T[new_cap];
                 std::copy(begin(), end(), m_data);
+            }
+        }
+
+        void printVector(){
+            for (auto i = 0; i < m_size; i++){
+                std::cout << m_data[i] << "\t";
             }
         }
 
